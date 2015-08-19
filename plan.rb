@@ -29,7 +29,7 @@ module Plan
     end
 
     def klass_name
-      Object.const_get(name.split("_").each {|s| s.capitalize! }.join(""))
+      name.split("_").each {|s| s.capitalize! }.join("")
     end
 
     def destination

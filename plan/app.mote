@@ -6,8 +6,8 @@ require '{{name}}/version'
 Gem::Specification.new do |spec|
   spec.name          = "{{name}}"
   spec.version       = NeuroAccountApiClient::VERSION
-  spec.authors       = "{{authors.inspect}}"
-  spec.email         = "{{email.inspect}}"
+  spec.authors       = {{authors.inspect}}
+  spec.email         = {{email.inspect}}
   spec.summary       = "{{description}}"
   spec.description   = "{{description}}"
   spec.homepage      = "{{homepage}}"
