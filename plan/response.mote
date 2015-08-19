@@ -1,0 +1,25 @@
+#api exception
+class ApiException < StandardError;end
+
+module Faraday
+  class Response::Managament < Response::Middleware
+    def parse_body(body)
+      body.empty? ? body : JSON.parse(body)
+    end
+
+    def check_status(env)
+      status = env[:status].to_s
+      if status =~ /^5/ || status =~ /^4/
+        raise ApiException.new({status: 'error', message: env[:body]})
+      end
+    end
+
+    def call(environment)
+      @app.call(environment).on_complete do |env|
+        check_status(env)
+        env[:body] = parse_body(env[:body])
+      end
+    end
+
+  end
+end

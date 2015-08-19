@@ -1,0 +1,7 @@
+#libs
+require_relative "{{name}}/version"
+require_relative "{{name}}/base"
+require_relative "{{name}}/response"
+require_relative "{{name}}/resource"
+
+module {{klass_name}};end

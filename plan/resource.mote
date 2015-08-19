@@ -1,0 +1,29 @@
+module {{klass_name}}
+  class Resource < Base
+
+    def create_with_payload(payload)
+      post_payload_query_api('/uri', payload)
+    end
+
+    def create(options)
+      post_query_api('/uri', options)
+    end
+
+    def show(resource_id)
+      get_query_api("/uri/#{resource_id}")
+    end
+
+    def delete(resource_id)
+      delete_query_api("/events/#{resource_id}")
+    end
+
+    def update_with_payload(options)
+      put_payload_query_api("/uri", options)
+    end
+
+    def update(resource_id, options)
+      put_query_api("/uri/#{resource_id}", options)
+    end
+
+  end
+end

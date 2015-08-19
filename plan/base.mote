@@ -1,0 +1,87 @@
+module {{klass_name}}
+
+  class Base
+    attr_reader :token
+
+    def initialize(token)
+      @token = token
+    end
+
+    def get_query_api(url, options = nil)
+      session.get(make_request_url(url, options)).body
+    end
+
+    def delete_query_api(url, options = nil)
+      session.delete(make_request_url(url, options)).body
+    end
+
+    def post_query_api(url, options = nil)
+      builder_options(options)
+      session.post(url, builder_options(options)).body
+    end
+
+    def put_query_api(url, options = nil)
+      builder_options(options)
+      session.put(url, builder_options(options)).body
+    end
+
+    def put_payload_query_api url,options
+      session.put do |req|
+        req.url url
+        req.headers['Content-Type'] = 'application/json'
+        req.body = options.to_json
+        req.options.timeout = 2000
+      end.body
+    end
+
+    def post_payload_query_api url, payload
+      session.post do |req|
+        req.url make_request_url(url, nil)
+        req.headers['Content-Type'] = 'application/json'
+        req.body = payload.to_json
+        req.options.timeout = 2000
+      end.body
+    end
+
+    def to_query(options)
+      Faraday::Utils.build_nested_query(options)
+    end
+
+    private
+
+    def session
+      @connection ||= ::Faraday.new base_url do |conn|
+        conn.response :logger if ENV['RACK_ENV'] == 'development'
+        conn.use Faraday::Response::Management
+        conn.adapter Faraday.default_adapter
+        #conn.headers = request_header
+      end
+    end
+
+    def base_url
+      if ENV['RACK_ENV'] == 'development'
+        "{{development_url}}"
+      else
+        "{{production_url}}"
+      end
+    end
+
+    def make_request_url url, options
+      formatted_url = "/api/#{version_api}/#{url}"
+      options ? "#{formatted_url}?#{builder_options(options)}" : formatted_url
+    end
+
+    def builder_options(options)
+      to_query(options)
+    end
+
+    def version_api
+      "v1"
+    end
+
+    #def request_header
+    #  {content_type: 'application/json', accept: '*/*', 'FOO_TOKEN' => @token}
+    #end
+
+  end
+end
